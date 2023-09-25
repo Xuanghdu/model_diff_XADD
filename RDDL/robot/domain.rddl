@@ -36,8 +36,4 @@ domain robot {
 
 	// };
 
-    termination {
-        (pos_x_robot == SIZE) ^ (pos_y_robot == SIZE);
-    };
-
 }
