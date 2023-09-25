@@ -1,0 +1,31 @@
+////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////
+
+non-fluents Robot {
+    domain = robot;
+
+    objects {
+		grid : {g};
+	};
+
+	// non-fluents {
+	// };
+
+}
+
+// Specify three power plants with default settings
+instance inst_robot {
+
+	domain = robot;
+
+	non-fluents = Robot;
+
+	max-nondef-actions = 1;
+
+	// init-state{
+	// };
+
+	horizon  = 100;
+	discount = 1.0;
+}

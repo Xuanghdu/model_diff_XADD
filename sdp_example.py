@@ -1,51 +1,70 @@
 
-from SDP.utils.utils import get_xadd_model_from_file
-from SDP.core.parser import Parser
 from SDP.core.mdp import MDP
+from SDP.core.parser import Parser
 from SDP.core.policy import Policy
 from SDP.policy_evaluation.pe import PolicyEvaluation
+from SDP.utils.utils import get_xadd_model_from_file
 from SDP.value_iteration.vi import ValueIteration
 
 ## Global Vars for SDP
-DISCOUNT = 0.9
+# DISCOUNT = 0.9
+DISCOUNT = 1
 N_STEPS = 2
 
 # Domain/Instance Path
-f_domain = './RDDL/reservoir/reservoir_disc/domain.rddl'
-f_instance = './RDDL/reservoir/reservoir_disc/instance_1res_source.rddl'
+# f_domain = './RDDL/reservoir/reservoir_disc/domain.rddl'
+# f_instance = './RDDL/reservoir/reservoir_disc/instance_1res_source.rddl'
+f_domain = './RDDL/robot/domain.rddl'
+f_instance = './RDDL/robot/instance.rddl'
 
 # load xadd model and context see SDP.utils for details
 model, context = get_xadd_model_from_file(f_domain, f_instance)
 
-### Value Iteration
-parser = Parser()
-mdp = parser.parse(model, is_linear=True, discount=DISCOUNT) ## SDP currently only handle linear cases
+# ### Value Iteration
+# parser = Parser()
+# mdp = parser.parse(model, is_linear=True, discount=DISCOUNT) ## SDP currently only handle linear cases
 
-vi= ValueIteration(mdp, N_STEPS)
-value_id_vi, q_id_list_vi = vi.solve()
+# vi= ValueIteration(mdp, N_STEPS)
+# value_id_vi, q_id_list_vi = vi.solve()
 
-# can printout value XADD using print function in VI
-print(vi.print(value_id_vi))
+# # Visualize XADD
+# context.save_graph(value_id_vi, f"./robot_vi_{N_STEPS}_{DISCOUNT}.pdf")
+
+# # can printout value XADD using print function in VI
+# print(vi.print(value_id_vi))
+
+# # print(q_id_list_vi)
 
 ### Policy PolicyEvaluation
 parser = Parser()
 mdp = parser.parse(model, is_linear=True, discount=DISCOUNT) ## SDP currently only handle linear cases
 
-# need to definte a policy by a string or load from xadd file
-policy_str_release_true =  "( [rlevel___t1 - 55 <= 0] ( [0] ) ( [1] ) )"
-policy_str_release_false =  "( [rlevel___t1 - 55 <= 0] ( [1] ) ( [0] ) )"
-# ## import using: 
+for aname, action in mdp.actions.items():
+    print(aname, action)
+
+# # need to definte a policy by a string or load from xadd file
+policy_str_right_true = "( [pos_x_robot - 4 <= 0] ( [1] ) ( [0] ) )"
+policy_str_up_true = "( [pos_x_robot - 4 <= 0] ( [0] ) ( [1] ) )"
+policy_str_right_true_up_true   =  "( [0] )"
+policy_str_right_false_up_false  =  "( [0] )"
+
+# ### import using:
 # policy_str_release_true = context.import_xadd('release___t1_true.xadd', locals=context._str_var_to_var)
 
 # get node ids for xadd
-policy_id_release_true = context.import_xadd(xadd_str=policy_str_release_true)
-policy_id_release_false = context.import_xadd(xadd_str=policy_str_release_false)
+policy_str_right_true = context.import_xadd(xadd_str=policy_str_right_true)
+policy_str_up_true = context.import_xadd(xadd_str=policy_str_up_true)
+policy_str_right_true_up_true = context.import_xadd(xadd_str=policy_str_right_true_up_true)
+policy_str_right_false_up_false = context.import_xadd(xadd_str=policy_str_right_false_up_false)
 
 # make a dictionary of action as stringst to node id
 xadd_policy = {
-    '{release___t1: True}': policy_id_release_true,
-    '{release___t1: False}': policy_id_release_false,
+    '{up: False, right: False}': policy_str_right_false_up_false,
+    '{up: False, right: True}': policy_str_right_true,
+    '{up: True, right: False}': policy_str_up_true,
+    '{up: True, right: True}': policy_str_right_true_up_true,
 }
+
 
 # load policy to mdp class
 policy = Policy(mdp)
@@ -61,9 +80,5 @@ value_id_pe, q_id_list_pe = pe.solve()
 # can printout value XADD using print function in pe
 print(pe.print(value_id_pe))
 
-
-
-
-
-
-
+# Visualize XADD
+context.save_graph(value_id_pe, f"./robot_pe_{N_STEPS}_{DISCOUNT}.pdf")
