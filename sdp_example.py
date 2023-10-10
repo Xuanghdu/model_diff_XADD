@@ -9,7 +9,7 @@ from SDP.value_iteration.vi import ValueIteration
 ## Global Vars for SDP
 # DISCOUNT = 0.9
 DISCOUNT = 1
-N_STEPS = 5
+N_STEPS = 2
 
 # Domain/Instance Path
 # f_domain = './RDDL/reservoir/reservoir_disc/domain.rddl'
@@ -96,10 +96,16 @@ context.save_graph(model.reward, f"./robot_reward_node_new_{N_STEPS}_{DISCOUNT}.
 # print(cpfs_node)
 # context.save_graph(model.cpfs["reach_flag'"], f"./robot_cpfs_node_new_{N_STEPS}_{DISCOUNT}.pdf")
 
-pos_x_danger_code = context._id_to_node.get(model.cpfs["pos_x_danger'"])
-print("pos_x_danger XADD")
-print(pos_x_danger_code)
-context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_code_new_{N_STEPS}_{DISCOUNT}.pdf")
+reach_flag_code = context._id_to_node.get(model.cpfs["reach_flag'"])
+print("reach_flag XADD")
+print(reach_flag_code)
+# context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_code_new_{N_STEPS}_{DISCOUNT}.pdf")
+
+pos_x_code = context._id_to_node.get(model.cpfs["pos_x_robot'"])
+print("pos_x_XADD")
+print(pos_x_code)
+# context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_code_new_{N_STEPS}_{DISCOUNT}.pdf")
+
 
 # print(context.reward)
 
