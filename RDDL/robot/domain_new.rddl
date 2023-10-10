@@ -14,6 +14,12 @@ domain robot {
         // pos_x_goal: { non-fluent, real, default = 5 }; // The x position of the goal
         // pos_y_goal: { non-fluent, real, default = 5 }; // The y position of the goal
 
+        //
+        random_left: {interm-fluent, real};
+        random_right: {interm-fluent, real};
+        random_up: {interm-fluent, real};
+        random_down: {interm-fluent, real};
+
         // State fluents
         pos_x_danger: {state-fluent, real, default = 5 };
         pos_y_danger: {state-fluent, real, default = 5 };
@@ -31,11 +37,14 @@ domain robot {
         pos_x_robot' = pos_x_robot + move * min[1, 10.5 - pos_x_robot];
         pos_y_robot' = pos_y_robot + move * min[1, 10.5 - pos_y_robot];
 
+        random_left = Bernoulli(0.5);
+        random_right = Bernoulli(0.5);
+
         // pos_x_danger' = pos_x_danger + Bernoulli(0.5) - Bernoulli(0.5);
         // pos_y_danger' = pos_y_danger + Bernoulli(0.5) - Bernoulli(0.5);
 
-        pos_x_danger' = pos_x_danger + Bernoulli(0.5);
-        pos_y_danger' = pos_y_danger + Bernoulli(0.5);
+        pos_x_danger' = pos_x_danger - random_left + random_right;
+        pos_y_danger' = pos_y_danger - random_down + random_up;
 
         // reach_flag' = if ((pos_x_robot' <= 11) ^ (pos_x_robot' >= 10) ^ (pos_y_robot' <= 11) ^ (pos_y_robot' >= 10)) then true else reach_flag;
         // reach_flag' = if (((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) | ((abs[pos_x_robot' - pos_x_danger'] <= 1) ^ (abs[pos_y_robot' - pos_y_danger'] <= 1))) then true else reach_flag;
