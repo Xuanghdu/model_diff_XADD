@@ -39,6 +39,8 @@ domain robot {
 
         random_left = Bernoulli(0.5);
         random_right = Bernoulli(0.5);
+        random_up = Bernoulli(0.5);
+        random_down = Bernoulli(0.5);
 
         // pos_x_danger' = pos_x_danger + Bernoulli(0.5) - Bernoulli(0.5);
         // pos_y_danger' = pos_y_danger + Bernoulli(0.5) - Bernoulli(0.5);

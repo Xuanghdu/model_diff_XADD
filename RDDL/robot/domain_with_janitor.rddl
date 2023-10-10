@@ -1,0 +1,74 @@
+domain robot {
+
+	requirements = {
+        // concurrent,          // This domain permits multiple non-default actions
+        // constrained-state,   // This domain uses state constraints
+        continuous,             // This domain uses real-valued parameterized variables
+        // cpf-deterministic,   // This domain uses deterministic conditional functions for transitions
+        // integer-valued,      // This domain uses integer variables
+        // intermediate-nodes,  // This domain uses intermediate parameterized variable nodes
+        // multivalued,         // This domain uses enumerated parameterized variables
+        // partially-observed,  // This domain uses observation parameterized variables so it is treated as a POMDP (not an MDP as is otherwise the case)
+        reward-deterministic    // This domain does not use a stochastic reward
+	};
+
+	types {
+		grid: object;
+	};
+
+    pvariables {
+		// Constants
+        // SIZE: { non-fluent, real, default = 10 };
+        // have one more unit around actual size
+
+
+        MOVE_AMOUNT_ROBOT: { non-fluent, real, default = 2.0 }; // The amount of units the robot moves
+
+        // JANITOR_SIZE_HALF: { non-fluent, real, default = 0.5 }; // The half size of the janitor (janitor occupies a square JANITOR_SIZE_HALF*2 x JANITOR_SIZE_HALF*2)
+        // MOVE_AMOUNT_JANITOR: { non-fluent, real, default = 1 }; // The amount of units the janitor moves
+
+        // interm fluents
+
+        // State fluents
+        pos_x_robot: {state-fluent, real, default = 0 }; // The x position of the robot
+        pos_y_robot: {state-fluent, real, default = 0 }; // The y position of the robot
+
+        // pos_x_janitor: {state-fluent, real, default = 2.5 }; // The x position of the janitor
+        // pos_y_janitor: {state-fluent, real, default = 2.5 }; // The y position of the janitor
+
+        reach_counter: {state-fluent, int, default = 0}; // The counter for the number of times the robot has reached the end
+        // bool instaed
+        // Action fluents
+        up: { action-fluent, bool, default = false}; // Action to move robot up
+        right: { action-fluent, bool, default = false}; // Action to move robot right
+        // down: { action-fluent, bool, default = false}; // Action to move robot down
+        // left: { action-fluent, bool, default = false}; // Action to move robot left
+    };
+
+    cpfs {
+        // acutally only 1/4 of moving left / right, and 1/2 staying
+        pos_x_janitor' = pos_x_janitor + MOVE_AMOUNT_JANITOR * Bernoulli(0.5) - MOVE_AMOUNT_JANITOR * Bernoulli(0.5);
+        pos_y_janitor' = pos_y_janitor + MOVE_AMOUNT_JANITOR * Bernoulli(0.5) - MOVE_AMOUNT_JANITOR * Bernoulli(0.5);
+
+        // pos_x_robot' = min[SIZE, max[0.0, pos_x_robot + right * MOVE_AMOUNT_ROBOT]];
+        // pos_y_robot' = min[SIZE, max[0.0, pos_y_robot + up * MOVE_AMOUNT_ROBOT]];
+
+        pos_x_robot' = pos_x_robot + right * MOVE_AMOUNT_ROBOT;
+        pos_y_robot' = pos_y_robot + up * MOVE_AMOUNT_ROBOT;
+
+    };
+
+
+    reward = if ((reach_counter == 1) ^ (pos_x_robot < 6) ^ (pos_x_robot >= 5) ^ (pos_y_robot < 6) ^ (pos_y_robot >= 5)) then 1 else 0;
+
+    // have one more unit around actual size
+
+	// state-invariants {
+
+	// };
+
+    // termination {
+    //     (pos_x_robot == SIZE) ^ (pos_y_robot == SIZE);
+    // };
+
+}

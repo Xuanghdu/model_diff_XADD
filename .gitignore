@@ -1,0 +1,7 @@
+exported_xadd/
+exported_cache/
+
+*.pdf
+*.pyc
+*.png
+**/*.pyc

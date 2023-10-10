@@ -1,0 +1,39 @@
+domain robot {
+
+	requirements = {
+        continuous,             // This domain uses real-valued parameterized variables
+        reward-deterministic    // This domain does not use a stochastic reward
+	};
+
+	types {
+		grid: object;
+	};
+
+    pvariables {
+		// Constants
+        // SIZE: { non-fluent, real, default = 10 };
+
+        // State fluents
+        pos_x_robot: {state-fluent, real, default = 0 }; // The x position of the robot
+        pos_y_robot: {state-fluent, real, default = 0 }; // The y position of the robot
+
+        // Action fluents
+        up: { action-fluent, bool, default = false}; // Action to move robot up
+        right: { action-fluent, bool, default = false}; // Action to move robot right
+    };
+
+    cpfs {
+        pos_x_robot' = pos_x_robot + right;
+        pos_y_robot' = pos_y_robot + up;
+    };
+
+    reward = if ((pos_x_robot < 6) ^ (pos_x_robot > 5) ^ (pos_y_robot < 6) ^ (pos_y_robot > 5)) then 1 else 0;
+    // TODO: for debugging, the above is hard-coded
+    // reward 1 if it reaches (x, y) where x, y in [5, 6).
+    // Only possible once if robot is required to either move up or right each step
+
+	// state-invariants {
+
+	// };
+
+}
