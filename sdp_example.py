@@ -9,7 +9,7 @@ from SDP.value_iteration.vi import ValueIteration
 ## Global Vars for SDP
 # DISCOUNT = 0.9
 DISCOUNT = 1
-N_STEPS = 2
+N_STEPS = 3
 
 # Domain/Instance Path
 # f_domain = './RDDL/reservoir/reservoir_disc/domain.rddl'
@@ -107,56 +107,56 @@ print(pos_x_code)
 # context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_code_new_{N_STEPS}_{DISCOUNT}.pdf")
 
 
-# print(context.reward)
+# # print(context.reward)
 
-# Visualize value function
-# plot a grid of value function
+# # Visualize value function
+# # plot a grid of value function
 
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
-import sympy as sp
+# import matplotlib
+# import matplotlib.pyplot as plt
+# import numpy as np
+# import sympy as sp
 
-x = np.arange(0, 10.5, 1)
-y = np.arange(0, 10.5, 1)
+# x = np.arange(0, 10.5, 1)
+# y = np.arange(0, 10.5, 1)
 
-X, Y = np.meshgrid(x, y)
-Z = np.zeros_like(X)
+# X, Y = np.meshgrid(x, y)
+# Z = np.zeros_like(X)
 
-var_set = context.collect_vars(value_id_pe)
-print(var_set)
-var_dict = {}
+# var_set = context.collect_vars(value_id_pe)
+# print(var_set)
+# var_dict = {}
 
-# pos_y_robot, pos_x_robot, reach_counter = var_set
-for i in var_set:
-    var_dict[f"{i}"] = i
+# # pos_y_robot, pos_x_robot, reach_counter = var_set
+# for i in var_set:
+#     var_dict[f"{i}"] = i
 
-print(var_dict)
+# print(var_dict)
 
-for i in range(len(x)):
-    for j in range(len(y)):
-        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5}
-        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5, var_dict["reach_flag"]: 0}
-        bool_assign = {}
-        # bool_assign = {var_dict["reach_flag"]: False}
-        # bool_assign = {var_dict["reach_flag"]: True}
-        Z[i][j] = context.evaluate(value_id_pe, bool_assign=bool_assign, cont_assign=cont_assign)
+# for i in range(len(x)):
+#     for j in range(len(y)):
+#         cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5}
+#         # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5, var_dict["reach_flag"]: 0}
+#         bool_assign = {}
+#         # bool_assign = {var_dict["reach_flag"]: False}
+#         # bool_assign = {var_dict["reach_flag"]: True}
+#         Z[i][j] = context.evaluate(value_id_pe, bool_assign=bool_assign, cont_assign=cont_assign)
 
-# plt.close('all')
-# plt.clf()
+# # plt.close('all')
+# # plt.clf()
 
-# matplotlib.use('GTK4Agg', force=True)
+# # matplotlib.use('GTK4Agg', force=True)
 
-fig, ax = plt.subplots()
+# fig, ax = plt.subplots()
 
-im = ax.imshow(Z, cmap='hot', interpolation='nearest')
-ax.set_title(f'Value Function for {N_STEPS} steps')
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-fig.colorbar(im)
-ax.set_xticks(np.arange(len(x)))
-ax.set_yticks(np.arange(len(y)))
-plt.show()
-plt.savefig(f"./robot_value_null_{N_STEPS}_{DISCOUNT}.png")
-# plt.savefig(f"./robot_value_false_{N_STEPS}_{DISCOUNT}.png")
-# plt.savefig(f"./robot_value_true_{N_STEPS}_{DISCOUNT}.png")
+# im = ax.imshow(Z, cmap='hot', interpolation='nearest')
+# ax.set_title(f'Value Function for {N_STEPS} steps')
+# ax.set_xlabel('x')
+# ax.set_ylabel('y')
+# fig.colorbar(im)
+# ax.set_xticks(np.arange(len(x)))
+# ax.set_yticks(np.arange(len(y)))
+# plt.show()
+# plt.savefig(f"./robot_value_null_{N_STEPS}_{DISCOUNT}.png")
+# # plt.savefig(f"./robot_value_false_{N_STEPS}_{DISCOUNT}.png")
+# # plt.savefig(f"./robot_value_true_{N_STEPS}_{DISCOUNT}.png")
