@@ -9,7 +9,7 @@ from SDP.value_iteration.vi import ValueIteration
 ## Global Vars for SDP
 # DISCOUNT = 0.9
 DISCOUNT = 1
-N_STEPS = 5
+N_STEPS = 3
 
 # Domain/Instance Path
 # f_domain = './RDDL/reservoir/reservoir_disc/domain.rddl'
@@ -81,25 +81,24 @@ print(pe.print(value_id_pe))
 # print(f"XADD: \n{context.get_repr()}")
 
 # Visualize XADD
-context.save_graph(value_id_pe, f"./robot_pe_area_newest_{N_STEPS}_{DISCOUNT}.pdf")
-# context.save_graph(value_id_pe, f"./robot_pe_area_new_{N_STEPS}_{DISCOUNT}.pdf")
+context.save_graph(value_id_pe, f"./robot_pe_area_{N_STEPS}_{DISCOUNT}.pdf")
 
 reward_node = context._id_to_node.get(model.reward)
 print("Reward XADD")
 print(reward_node)
-context.save_graph(model.reward, f"./robot_reward_node_new_{N_STEPS}_{DISCOUNT}.pdf")
+context.save_graph(model.reward, f"./robot_reward_node_{N_STEPS}_{DISCOUNT}.pdf")
 
 # print(model.cpfs["reach_flag'"])
 
-# cpfs_node = context._id_to_node.get(model.cpfs["reach_flag'"])
-# print("CPFS XADD")
-# print(cpfs_node)
-# context.save_graph(model.cpfs["reach_flag'"], f"./robot_cpfs_node_new_{N_STEPS}_{DISCOUNT}.pdf")
+reach_flag_node = context._id_to_node.get(model.cpfs["reach_flag'"])
+print("reach_flag XADD")
+print(reach_flag_node)
+context.save_graph(model.cpfs["reach_flag'"], f"./robot_reach_flag_{N_STEPS}_{DISCOUNT}.pdf")
 
-pos_x_danger_code = context._id_to_node.get(model.cpfs["pos_x_danger'"])
+pos_x_danger_node = context._id_to_node.get(model.cpfs["pos_x_danger'"])
 print("pos_x_danger XADD")
-print(pos_x_danger_code)
-context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_code_new_{N_STEPS}_{DISCOUNT}.pdf")
+print(pos_x_danger_node)
+context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_{N_STEPS}_{DISCOUNT}.pdf")
 
 # print(context.reward)
 
@@ -111,8 +110,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sp
 
-x = np.arange(0, 10.5, 1)
-y = np.arange(0, 10.5, 1)
+x = np.arange(0, 10.5, 0.1)
+y = np.arange(0, 10.5, 0.1)
 
 X, Y = np.meshgrid(x, y)
 Z = np.zeros_like(X)
@@ -129,8 +128,8 @@ print(var_dict)
 
 for i in range(len(x)):
     for j in range(len(y)):
-        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5}
-        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5, var_dict["reach_flag"]: 0}
+        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5}
+        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5, var_dict["reach_flag"]: 0}
         bool_assign = {}
         # bool_assign = {var_dict["reach_flag"]: False}
         # bool_assign = {var_dict["reach_flag"]: True}
@@ -148,9 +147,7 @@ ax.set_title(f'Value Function for {N_STEPS} steps')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 fig.colorbar(im)
-ax.set_xticks(np.arange(len(x)))
-ax.set_yticks(np.arange(len(y)))
+ax.set_xticks(np.arange(0, 10.5, 1))
+ax.set_yticks(np.arange(0, 10.5, 1))
 plt.show()
-plt.savefig(f"./robot_value_null_{N_STEPS}_{DISCOUNT}.png")
-# plt.savefig(f"./robot_value_false_{N_STEPS}_{DISCOUNT}.png")
-# plt.savefig(f"./robot_value_true_{N_STEPS}_{DISCOUNT}.png")
+plt.savefig(f"./robot_value_{N_STEPS}_{DISCOUNT}.png")

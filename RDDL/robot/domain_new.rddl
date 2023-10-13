@@ -15,10 +15,10 @@ domain robot {
         // pos_y_goal: { non-fluent, real, default = 5 }; // The y position of the goal
 
         //
-        random_left: {interm-fluent, real};
-        random_right: {interm-fluent, real};
-        random_up: {interm-fluent, real};
-        random_down: {interm-fluent, real};
+        // random_left: {interm-fluent, real};
+        // random_right: {interm-fluent, real};
+        // random_up: {interm-fluent, real};
+        // random_down: {interm-fluent, real};
 
         // State fluents
         pos_x_danger: {state-fluent, real, default = 5 };
@@ -27,26 +27,28 @@ domain robot {
         pos_x_robot: {state-fluent, real, default = 0 }; // The x position of the robot
         pos_y_robot: {state-fluent, real, default = 0 }; // The y position of the robot
 
-        // reach_flag: {state-fluent, bool, default = false};
+        reach_flag: {state-fluent, int, default = 0};
 
         // Action fluents
-        move: { action-fluent, bool, default = true}; // Action to move robot
+        move: { action-fluent, bool, default = false}; // Action to move robot
     };
 
     cpfs {
         pos_x_robot' = pos_x_robot + move * min[1, 10.5 - pos_x_robot];
         pos_y_robot' = pos_y_robot + move * min[1, 10.5 - pos_y_robot];
 
-        random_left = Bernoulli(0.5);
-        random_right = Bernoulli(0.5);
-        random_up = Bernoulli(0.5);
-        random_down = Bernoulli(0.5);
+        // random_left = Bernoulli(0.5);
+        // random_right = Bernoulli(0.5);
+        // random_up = Bernoulli(0.5);
+        // random_down = Bernoulli(0.5);
 
-        // pos_x_danger' = pos_x_danger + Bernoulli(0.5) - Bernoulli(0.5);
-        // pos_y_danger' = pos_y_danger + Bernoulli(0.5) - Bernoulli(0.5);
+        // pos_x_danger' = pos_x_danger - random_left + random_right;
+        // pos_y_danger' = pos_y_danger - random_down + random_up;
 
-        pos_x_danger' = pos_x_danger - random_left + random_right;
-        pos_y_danger' = pos_y_danger - random_down + random_up;
+        pos_x_danger' = pos_x_danger;
+        pos_y_danger' = pos_y_danger;
+
+        reach_flag' = if (((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) | ((abs[pos_x_robot' - pos_x_danger'] <= 1) ^ (abs[pos_y_robot' - pos_y_danger'] <= 1))) then 1.0 else reach_flag;
 
         // reach_flag' = if ((pos_x_robot' <= 11) ^ (pos_x_robot' >= 10) ^ (pos_y_robot' <= 11) ^ (pos_y_robot' >= 10)) then true else reach_flag;
         // reach_flag' = if (((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) | ((abs[pos_x_robot' - pos_x_danger'] <= 1) ^ (abs[pos_y_robot' - pos_y_danger'] <= 1))) then true else reach_flag;
@@ -56,5 +58,6 @@ domain robot {
     // reward = if ((~reach_flag) ^ (pos_x_robot <= 11) ^ (pos_x_robot >= 10) ^ (pos_y_robot <= 11) ^ (pos_y_robot >= 10)) then 1 else 0;
     // reward = if ((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) then 1 else 0;
     // reward = if ((~reach_flag) ^ (abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) then 1 else 0;
-    reward = if ((abs[pos_x_robot - pos_x_danger] <= 0.5) ^ (abs[pos_y_robot - pos_y_danger] <= 0.5)) then 1 else 0;
+    // reward = if ((abs[pos_x_robot - pos_x_danger] <= 0.5) ^ (abs[pos_y_robot - pos_y_danger] <= 0.5)) then 1 else 0;
+    reward = (1-reach_flag) * ((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1));
 }
