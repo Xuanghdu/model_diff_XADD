@@ -95,10 +95,15 @@ print("reach_flag XADD")
 print(reach_flag_node)
 context.save_graph(model.cpfs["reach_flag'"], f"./robot_reach_flag_{N_STEPS}_{DISCOUNT}.pdf")
 
-pos_x_danger_node = context._id_to_node.get(model.cpfs["pos_x_danger'"])
-print("pos_x_danger XADD")
-print(pos_x_danger_node)
-context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_{N_STEPS}_{DISCOUNT}.pdf")
+# pos_x_danger_node = context._id_to_node.get(model.cpfs["pos_x_danger'"])
+# print("pos_x_danger XADD")
+# print(pos_x_danger_node)
+# context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_{N_STEPS}_{DISCOUNT}.pdf")
+
+pos_x_robot_node = context._id_to_node.get(model.cpfs["pos_x_robot'"])
+print("pos_x_robot XADD")
+print(pos_x_robot_node)
+context.save_graph(model.cpfs["pos_x_robot'"], f"./robot_pos_x_robot_{N_STEPS}_{DISCOUNT}.pdf")
 
 # print(context.reward)
 
@@ -128,8 +133,10 @@ print(var_dict)
 
 for i in range(len(x)):
     for j in range(len(y)):
+        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j]}
+        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["reach_flag"]: 0}
         # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5}
-        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5, var_dict["reach_flag"]: 0}
+        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5, var_dict["reach_flag"]: 0}
         bool_assign = {}
         # bool_assign = {var_dict["reach_flag"]: False}
         # bool_assign = {var_dict["reach_flag"]: True}
@@ -147,7 +154,7 @@ ax.set_title(f'Value Function for {N_STEPS} steps')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 fig.colorbar(im)
-ax.set_xticks(np.arange(0, 10.5, 1))
-ax.set_yticks(np.arange(0, 10.5, 1))
+ax.set_xticks(np.arange(0, 105, 10))
+ax.set_yticks(np.arange(0, 105, 10))
 plt.show()
 plt.savefig(f"./robot_value_{N_STEPS}_{DISCOUNT}.png")
