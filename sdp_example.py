@@ -9,7 +9,7 @@ from SDP.value_iteration.vi import ValueIteration
 ## Global Vars for SDP
 # DISCOUNT = 0.9
 DISCOUNT = 1
-N_STEPS = 3
+N_STEPS = 4
 
 # Domain/Instance Path
 # f_domain = './RDDL/reservoir/reservoir_disc/domain.rddl'
@@ -133,8 +133,8 @@ print(var_dict)
 
 for i in range(len(x)):
     for j in range(len(y)):
-        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j]}
-        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["reach_flag"]: 0}
+        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j]}
+        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["reach_flag"]: 0}
         # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5}
         # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5, var_dict["reach_flag"]: 0}
         bool_assign = {}

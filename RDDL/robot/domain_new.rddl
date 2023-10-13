@@ -49,18 +49,18 @@ domain robot {
         // pos_y_danger' = pos_y_danger;
 
         // reach_flag' = if (((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) | ((abs[pos_x_robot' - pos_x_danger'] <= 1) ^ (abs[pos_y_robot' - pos_y_danger'] <= 1))) then 1.0 else reach_flag;
-        reach_flag' = if (((abs[pos_x_robot - 5] <= 1) ^ (abs[pos_y_robot - 5] <= 1)) | ((abs[pos_x_robot - 4] <= 1) ^ (abs[pos_y_robot - 4] <= 1))) then 1.0 else reach_flag;
 
-        // reach_flag' = if ((pos_x_robot' <= 11) ^ (pos_x_robot' >= 10) ^ (pos_y_robot' <= 11) ^ (pos_y_robot' >= 10)) then true else reach_flag;
+        reach_flag' = if ((pos_x_robot <= 6) ^ (pos_x_robot >= 5) ^ (pos_y_robot <= 6) ^ (pos_y_robot >= 5)) then 1.0 else reach_flag;
         // reach_flag' = if (((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) | ((abs[pos_x_robot' - pos_x_danger'] <= 1) ^ (abs[pos_y_robot' - pos_y_danger'] <= 1))) then true else reach_flag;
         // reach_flag' = if ((abs[pos_x_robot + move * min[1, 10.5 - pos_x_robot] - (pos_x_danger + Bernoulli(0.5) - Bernoulli(0.5))] <= 1) ^ (abs[pos_y_robot + move * min[1, 10.5 - pos_y_robot] - (pos_y_danger + Bernoulli(0.5) - Bernoulli(0.5))] <= 1)) then true else reach_flag;
     };
 
+    reward = (1 - reach_flag) * (pos_x_robot <= 6) * (pos_x_robot >= 5) * (pos_y_robot <= 6) * (pos_y_robot >= 5);
     // reward = if ((~reach_flag) ^ (pos_x_robot <= 11) ^ (pos_x_robot >= 10) ^ (pos_y_robot <= 11) ^ (pos_y_robot >= 10)) then 1 else 0;
     // reward = if ((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) then 1 else 0;
     // reward = if ((~reach_flag) ^ (abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) then 1 else 0;
     // reward = if ((abs[pos_x_robot - pos_x_danger] <= 0.5) ^ (abs[pos_y_robot - pos_y_danger] <= 0.5)) then 1 else 0;
 
     // reward = (1-reach_flag) * ((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1));
-    reward = (1-reach_flag) * ((abs[pos_x_robot - 5] <= 1) ^ (abs[pos_y_robot - 5] <= 1));
+    // reward = (1-reach_flag) * ((abs[pos_x_robot - 5] <= 1) ^ (abs[pos_y_robot - 5] <= 1));
 }
