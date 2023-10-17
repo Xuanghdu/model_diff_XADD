@@ -1,0 +1,46 @@
+domain robot {
+
+	requirements = {
+        continuous,             // This domain uses real-valued parameterized variables
+        reward-deterministic    // This domain does not use a stochastic reward
+	};
+
+	types {
+		grid: object;
+	};
+
+    pvariables {
+		// Constants
+
+        // Intermediate fluents
+        random: {interm-fluent, real};
+
+
+        // State fluents
+        pos_x_danger: {state-fluent, real, default = 5 };
+
+        pos_x_robot: {state-fluent, real, default = 0 }; // The x position of the robot
+
+        reach_flag: {state-fluent, int, default = 0};
+
+        binary_val: {state-fluent, bool, default = false};
+
+        // Action fluents
+        move: { action-fluent, bool, default = false}; // Action to move robot
+    };
+
+    cpfs {
+        pos_x_robot' = pos_x_robot + move;
+
+        random = Bernoulli(0.5);
+
+        // pos_x_danger' = pos_x_danger;
+        pos_x_danger' = if (random) then 100 else pos_x_danger;
+        // pos_x_danger' = if (random) then pos_x_danger else 100;
+
+        reach_flag' = if (abs[pos_x_robot - pos_x_danger] <= 1) then 1.0 else reach_flag;
+
+    };
+
+    reward = (1 - reach_flag) * (abs[pos_x_robot - pos_x_danger] <= 1);
+}

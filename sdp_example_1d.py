@@ -1,4 +1,3 @@
-
 from SDP.core.mdp import MDP
 from SDP.core.parser import Parser
 from SDP.core.policy import Policy
@@ -14,7 +13,7 @@ N_STEPS = 4
 # Domain/Instance Path
 # f_domain = './RDDL/reservoir/reservoir_disc/domain.rddl'
 # f_instance = './RDDL/reservoir/reservoir_disc/instance_1res_source.rddl'
-f_domain = './RDDL/robot/domain_2d.rddl'
+f_domain = './RDDL/robot/domain_1d.rddl'
 f_instance = './RDDL/robot/instance.rddl'
 
 # load xadd model and context see SDP.utils for details
@@ -28,7 +27,7 @@ model, context = get_xadd_model_from_file(f_domain, f_instance)
 # value_id_vi, q_id_list_vi = vi.solve()
 
 # # Visualize XADD
-# context.save_graph(value_id_vi, f"./2d_robot_vi_{N_STEPS}_{DISCOUNT}.pdf")
+# context.save_graph(value_id_vi, f"./robot_vi_{N_STEPS}_{DISCOUNT}.pdf")
 
 # # can printout value XADD using print function in VI
 # print(vi.print(value_id_vi))
@@ -81,29 +80,29 @@ print(pe.print(value_id_pe))
 # print(f"XADD: \n{context.get_repr()}")
 
 # Visualize XADD
-context.save_graph(value_id_pe, f"./2d_robot_pe_area_{N_STEPS}_{DISCOUNT}.pdf")
+context.save_graph(value_id_pe, f"./robot_pe_area_{N_STEPS}_{DISCOUNT}.pdf")
 
 reward_node = context._id_to_node.get(model.reward)
 print("Reward XADD")
 print(reward_node)
-context.save_graph(model.reward, f"./2d_robot_reward_node_{N_STEPS}_{DISCOUNT}.pdf")
+context.save_graph(model.reward, f"./robot_reward_node_{N_STEPS}_{DISCOUNT}.pdf")
 
 # print(model.cpfs["reach_flag'"])
 
 reach_flag_node = context._id_to_node.get(model.cpfs["reach_flag'"])
 print("reach_flag XADD")
 print(reach_flag_node)
-context.save_graph(model.cpfs["reach_flag'"], f"./2d_robot_reach_flag_{N_STEPS}_{DISCOUNT}.pdf")
+context.save_graph(model.cpfs["reach_flag'"], f"./robot_reach_flag_{N_STEPS}_{DISCOUNT}.pdf")
 
 pos_x_danger_node = context._id_to_node.get(model.cpfs["pos_x_danger'"])
 print("pos_x_danger XADD")
 print(pos_x_danger_node)
-context.save_graph(model.cpfs["pos_x_danger'"], f"./2d_robot_pos_x_danger_{N_STEPS}_{DISCOUNT}.pdf")
+context.save_graph(model.cpfs["pos_x_danger'"], f"./robot_pos_x_danger_{N_STEPS}_{DISCOUNT}.pdf")
 
 pos_x_robot_node = context._id_to_node.get(model.cpfs["pos_x_robot'"])
 print("pos_x_robot XADD")
 print(pos_x_robot_node)
-context.save_graph(model.cpfs["pos_x_robot'"], f"./2d_robot_pos_x_robot_{N_STEPS}_{DISCOUNT}.pdf")
+context.save_graph(model.cpfs["pos_x_robot'"], f"./robot_pos_x_robot_{N_STEPS}_{DISCOUNT}.pdf")
 
 # print(context.reward)
 
@@ -116,7 +115,7 @@ import numpy as np
 import sympy as sp
 
 x = np.arange(0, 10.5, 0.1)
-y = np.arange(0, 10.5, 0.1)
+y = np.arange(0, 1.5, 0.1)
 
 X, Y = np.meshgrid(x, y)
 Z = np.zeros_like(X)
@@ -133,12 +132,10 @@ print(var_dict)
 
 for i in range(len(x)):
     for j in range(len(y)):
-        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5}
-        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_y_robot"]: y[j], var_dict["pos_x_danger"]: 5, var_dict["pos_y_danger"]: 5, var_dict["reach_flag"]: 0}
+        cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_x_danger"]: 5, var_dict["reach_flag"]: 0}
+        # cont_assign = {var_dict["pos_x_robot"]: x[i], var_dict["pos_x_danger"]: 5, var_dict["reach_flag"]: 0}
         bool_assign = {}
-        # bool_assign = {var_dict["reach_flag"]: False}
-        # bool_assign = {var_dict["reach_flag"]: True}
-        Z[i][j] = context.evaluate(value_id_pe, bool_assign=bool_assign, cont_assign=cont_assign)
+        Z[j][i] = context.evaluate(value_id_pe, bool_assign=bool_assign, cont_assign=cont_assign)
 
 # plt.close('all')
 # plt.clf()
@@ -148,11 +145,11 @@ for i in range(len(x)):
 fig, ax = plt.subplots()
 
 im = ax.imshow(Z, cmap='hot', interpolation='nearest')
-ax.set_title(f'Value Function for {N_STEPS} steps')
+ax.set_title(f'Value Function for {N_STEPS-1} steps')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 fig.colorbar(im)
 ax.set_xticks(np.arange(0, 105, 10))
-ax.set_yticks(np.arange(0, 105, 10))
+ax.set_yticks(np.arange(0, 15, 10))
 plt.show()
-plt.savefig(f"./2d_robot_value_{N_STEPS}_{DISCOUNT}.png")
+plt.savefig(f"./robot_value_{N_STEPS}_{DISCOUNT}.png")

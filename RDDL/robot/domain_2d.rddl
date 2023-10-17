@@ -1,0 +1,55 @@
+domain robot {
+
+	requirements = {
+        continuous,             // This domain uses real-valued parameterized variables
+        reward-deterministic    // This domain does not use a stochastic reward
+	};
+
+	types {
+		grid: object;
+	};
+
+    pvariables {
+		// Constants
+
+        // Intermediate fluents
+        random_left: {interm-fluent, real};
+        random_right: {interm-fluent, real};
+        random_up: {interm-fluent, real};
+        random_down: {interm-fluent, real};
+
+        // State fluents
+        pos_x_danger: {state-fluent, real, default = 5 };
+        pos_y_danger: {state-fluent, real, default = 5 };
+
+        pos_x_robot: {state-fluent, real, default = 0 }; // The x position of the robot
+        pos_y_robot: {state-fluent, real, default = 0 }; // The y position of the robot
+
+        reach_flag: {state-fluent, real, default = 0};
+
+        // Action fluents
+        move: { action-fluent, bool, default = false}; // Action to move robot
+    };
+
+    cpfs {
+
+        pos_x_robot' = pos_x_robot + move * min[1, 10.5 - pos_x_robot];
+        pos_y_robot' = pos_y_robot + move * min[1, 10.5 - pos_y_robot];
+
+        random_right = Bernoulli(0.5);
+        // random_left = Bernoulli(0.5);
+        random_up = Bernoulli(0.5);
+        // random_down = Bernoulli(0.5);
+
+        pos_x_danger' = if (random_right) then pos_x_danger + 4 else pos_x_danger;
+        pos_y_danger' = if (random_up) then pos_y_danger + 4 else pos_y_danger;
+
+        // pos_x_danger' = pos_x_danger;
+        // pos_y_danger' = pos_y_danger;
+
+        reach_flag' = if (((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1))) then 1.0 else reach_flag;
+        // reach_flag' = if (((abs[pos_x_robot - pos_x_danger] <= 1) ^ (abs[pos_y_robot - pos_y_danger] <= 1)) | ((abs[pos_x_robot' - pos_x_danger'] <= 1) ^ (abs[pos_y_robot' - pos_y_danger'] <= 1))) then 1.0 else reach_flag;
+    };
+
+    reward = (1 - reach_flag) * (abs[pos_x_robot - pos_x_danger] <= 1) * (abs[pos_y_robot - pos_y_danger] <= 1);
+}
